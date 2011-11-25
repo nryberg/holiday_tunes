@@ -22,6 +22,7 @@ file.readlines.each do |station|
             :by => song.by,
             :cover => song.cover,
             :song_yes_id => song.id
+            :rank => song.rank
             }
     
     @songs.save(entry)
