@@ -1,0 +1,12 @@
+%html
+  %head
+    %link{:rel=>"stylesheet", :href=> "/css/screen.css", :type=>"text/css", :media=>"screen, projection"}
+    %title Ho Ho Ho Ho!
+  %body
+    .container
+      .span-24
+        .span-4{:style=> "float: right"} Test
+        .span-4.last{:style=> "float: right"} 
+          %a{:href => "/station_list"} Stations
+      = yield
+

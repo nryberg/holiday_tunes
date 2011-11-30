@@ -1,0 +1,5 @@
+%table.span-12
+  - @results.each do |result|
+    %tr
+      %td= Time.at(result["_id"] * 0.001).to_s
+      %td{:style=> "text-align:right"}= commify(result["count"].to_i)

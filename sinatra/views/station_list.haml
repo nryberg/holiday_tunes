@@ -1,0 +1,5 @@
+%table.span-12
+  - @results.each do |result|
+    %tr
+      %td= result["_id"].upcase
+      %td{:style=> "text-align:right"}= commify(result["value"].to_i)
