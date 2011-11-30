@@ -7,7 +7,7 @@ class Map
   
   def count_by(item)
     m = "function(){
-        emit(this.ITEM.toLowerCase(), 1);
+        emit(this.ITEM, 1);
         }"
     m.gsub!("ITEM", item)
     r = reduce_count
@@ -23,12 +23,24 @@ class Map
     m = "function(){
         day = Date.UTC(this.at.getFullYear(), this.at.getMonth(), this.at.getDate());
         
-        emit({day: day, station: this.station}, {count: 1});
+        emit({day: day, station: this.station}, 1);
         }"
     m.gsub!("ITEM", item)
     r = reduce_count
-    @collection.map_reduce(m,r,{:out =>"output"})
-      
+    
+    output = @collection.map_reduce(m,r, {:out => "output"})
+    @columns = output.distinct("_id.day")
+    @rows = output.distinct("_id." + item)
+
+    @table = Hash.new
+
+    output.find().each do |line|
+     row_col = line["_id"]
+     row = row_col[item]
+     col = row_col["day"]
+     @table[[row, col]] = line["value"].to_i
+    end
+     
   end
     
   
@@ -102,9 +114,9 @@ class Map
      r = "function(k, vals){
        var sum = 0;
        vals.forEach(function(val) {
-         sum += 1;
+         sum += val;
          });
-       return {count: sum};
+       return sum;
        };"
   end
     

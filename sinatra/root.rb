@@ -35,7 +35,8 @@ end
 
 get '/date_list' do
   map = Map.new(@@song_list)
-  coll = map.count_item_by_day("station")
-  @results = @@output.find({}).sort("station", :desc)
+  map.count_item_by_day("station")
+  @results = map
+  
   haml :date_list
 end

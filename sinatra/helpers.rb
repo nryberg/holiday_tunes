@@ -27,6 +27,11 @@ module Helpers
         end
         int.reverse + dec
     end
+
+    def simple_date_from_number(num)
+      t = Time.at(num * 0.001)
+      t.strftime("%m/%d/%Y")
+    end
  end
      
 end
