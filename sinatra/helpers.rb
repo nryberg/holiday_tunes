@@ -32,6 +32,12 @@ module Helpers
       t = Time.at(num * 0.001)
       t.strftime("%m/%d/%Y")
     end
+
+    def simple_date_time_from_number(num)
+      t = Time.at(num * 0.001)
+      t.strftime("%m/%d/%Y %H:%M")
+    end
+
  end
      
 end

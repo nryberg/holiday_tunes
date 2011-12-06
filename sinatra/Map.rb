@@ -20,6 +20,7 @@ class Map
   end
   
   def count_item_by_day(item)
+        #day = formatDate(this.at.getDate());
     m = "function(){
         day = Date.UTC(this.at.getFullYear(), this.at.getMonth(), this.at.getDate());
         

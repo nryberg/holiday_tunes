@@ -1,7 +1,8 @@
 %table.span-12
   %th Station
   - @results.columns.each do |col|
-    %th= simple_date_from_number(col)
+    %th= simple_date_time_from_number(col)
+    /%th= col
   - @results.rows.each do |row|
     %tr
     %td= row

@@ -5,8 +5,11 @@
   %body
     .container
       .span-24
-        .span-4{:style=> "float: right"} Test
-        .span-4.last{:style=> "float: right"} 
+        .span-3.last{:style=> "float: right"} 
+          %a{:href => "/"} Ho Ho Ho 
+        .span-3.last{:style=> "float: right"} 
+          %a{:href => "/date_list"} Dates 
+        .span-3.last{:style=> "float: right"} 
           %a{:href => "/station_list"} Stations
       = yield
 

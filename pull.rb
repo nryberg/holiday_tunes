@@ -13,18 +13,20 @@ file = File.new("stations.txt", "r")
 @@songs = @db['songs']
 
 file.readlines.each do |station|
-  @list = Yesradio::get_log :name => station.chomp, :ago => 1
+  @list = Yesradio::get_log :name => station.chomp, :ago => 5
   ap station.chomp
-  @list.each do |song|
-    entry = {:station => station.chomp, 
-            :title => song.title, 
-            :at => Time.parse(song.at.to_s).utc, 
-            :by => song.by,
-            :cover => song.cover,
-            :song_yes_id => song.id, 
-            :rank => song.rank
-            }
-    @@songs.save(entry)
+  unless @list.nil? 
+    @list.each do |song|
+      entry = {:station => station.chomp, 
+              :title => song.title, 
+              :at => Time.parse(song.at.to_s).utc, 
+              :by => song.by,
+              :cover => song.cover,
+              :song_yes_id => song.id, 
+              :rank => song.rank
+              }
+      @@songs.save(entry)
+    end
   end
 end
 

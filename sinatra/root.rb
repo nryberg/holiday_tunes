@@ -7,22 +7,26 @@ require 'awesome_print'
 require 'Map'
 require 'helpers'
 
-@con = Mongo::Connection.new
-@@db = @con['holiday']
-cursor = @@db['songs'].find({})
-@@song_list = @@db['songs']
-@@output = @@db['output']
-@@songs = cursor.limit(20)
+SERVER = '127.0.0.1'
+#SERVER = '192.168.0.100'
+DATABASE = 'holiday'
+SONGS = 'songs_t'
+OUTPUT = 'output'
+
+@con = Mongo::Connection.new(SERVER)
+@@db = @con[DATABASE]
+@@song_list = @@db[SONGS]
+@@output = @@db[OUTPUT]
 
 
 get "/" do
-  @@songs.rewind!
+  @@songs = @@db[SONGS].find.limit(20).to_a
   haml :index 
 end
 
 get '/station/:station' do
   @station = params[:station]
-  @count = @@db['songs'].find({:station=> params[:station]}).count
+  @count = @@song_list.find({:station=> params[:station]}).count
   haml :station
 end
 
