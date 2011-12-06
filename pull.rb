@@ -13,7 +13,7 @@ file = File.new("stations.txt", "r")
 @@songs = @db['songs']
 
 file.readlines.each do |station|
-  @list = Yesradio::get_log :name => station.chomp, :ago => 5
+  @list = Yesradio::get_log :name => station.chomp, :ago => 1
   ap station.chomp
   unless @list.nil? 
     @list.each do |song|

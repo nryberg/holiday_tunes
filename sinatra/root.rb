@@ -10,7 +10,7 @@ require 'helpers'
 SERVER = '127.0.0.1'
 #SERVER = '192.168.0.100'
 DATABASE = 'holiday'
-SONGS = 'songs_t'
+SONGS = 'song_list'
 OUTPUT = 'output'
 
 @con = Mongo::Connection.new(SERVER)

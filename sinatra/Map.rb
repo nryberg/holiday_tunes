@@ -22,7 +22,7 @@ class Map
   def count_item_by_day(item)
         #day = formatDate(this.at.getDate());
     m = "function(){
-        day = Date.UTC(this.at.getFullYear(), this.at.getMonth(), this.at.getDate());
+        day = Date.UTC(this.at.getUTCFullYear(), this.at.getUTCMonth(), this.at.getUTCDate());
         
         emit({day: day, station: this.station}, 1);
         }"
