@@ -44,3 +44,11 @@ get '/date_list' do
   
   haml :date_list
 end
+
+get '/song_list' do
+  map = Map.new(@@song_list)
+  map.count_by("title")
+  @high_results = @@output.find({}).sort("value", :desc).limit(10)
+  @low_results = @@output.find({}).sort("value", :asc).limit(10)
+  haml :song_list
+end

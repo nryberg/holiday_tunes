@@ -29,12 +29,12 @@ module Helpers
     end
 
     def simple_date_from_number(num)
-      t = Time.at(num * 0.001)
+      t = Time.at(num * 0.001).utc
       t.strftime("%m/%d/%Y")
     end
 
     def simple_date_time_from_number(num)
-      t = Time.at(num * 0.001)
+      t = Time.at(num * 0.001).utc
       t.strftime("%m/%d/%Y %H:%M")
     end
 

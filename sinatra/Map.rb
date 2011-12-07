@@ -14,7 +14,17 @@ class Map
     @collection.map_reduce(m,r,{:out =>"output"})
     
   end
-  
+ 
+  def count_by_filtered(item, filter, filter_by)
+    m = "function(){
+        emit(this.ITEM, 1);
+        }"
+    m.gsub!("ITEM", item)
+    r = reduce_count
+    @collection.map_reduce(m,r,{:out =>"output"}, {filter_by => filter})
+    
+  end
+ 
   def collection_name 
     @collection_name = @collection.name
   end

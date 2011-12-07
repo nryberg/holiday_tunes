@@ -1,10 +1,10 @@
 %table.span-12
   %th Station
   - @results.columns.each do |col|
-    %th= simple_date_time_from_number(col)
+    %th= simple_date_from_number(col)
     /%th= col
   - @results.rows.each do |row|
     %tr
     %td= row
     - @results.columns.each do |col|
-      %td= @results.table[[row, col]].to_i
+      %td{:style => 'text-align: right'}= @results.table[[row, col]].to_i

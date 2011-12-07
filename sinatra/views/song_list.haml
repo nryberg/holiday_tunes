@@ -1,0 +1,13 @@
+%h2.span-24 Top Plays
+%table.span-12
+  - @high_results.each do |result|
+    %tr
+      %td= result["_id"]
+      %td{:style=> "text-align:right"}= commify(result["value"].to_i)
+
+%h2.span-24 Bottom Plays
+%table.span-12
+  - @low_results.each do |result|
+    %tr
+      %td= result["_id"]
+      %td{:style=> "text-align:right"}= commify(result["value"].to_i)
