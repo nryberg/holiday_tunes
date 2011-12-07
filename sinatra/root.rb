@@ -30,6 +30,25 @@ get '/station/:station' do
   haml :station
 end
 
+get '/list/:item/?:sort_by?/?:sort_order?/?:skip_value?' do
+  
+  @item = params[:item]
+  sort_by = params[:sort_by] ||= 'value'
+  order = Mongo::ASCENDING 
+  sort_order = params[:sort_order] ||= 'asc'
+  skip_value = params[:skip_value].to_i ||= 0
+
+  if sort_order == "desc" then
+    order = Mongo::DESCENDING
+  end
+  map = Map.new(@@song_list)
+  coll = map.count_by(@item)
+
+  @results = @@output.find({}).sort(sort_by, order).skip(skip_value).limit(20)
+
+  haml :list
+end
+
 get '/station_list' do
   map = Map.new(@@song_list)
   coll = map.count_by("station")
@@ -52,3 +71,8 @@ get '/song_list' do
   @low_results = @@output.find({}).sort("value", :asc).limit(10)
   haml :song_list
 end
+
+get '/song/:title' do
+  title = params[:title]
+  map.count_by_filtered("artist", title)
+end 
