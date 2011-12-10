@@ -1,17 +1,20 @@
 %html
   %head
     %link{:rel=>"stylesheet", :href=> "/css/screen.css", :type=>"text/css", :media=>"screen, projection"}
+    %link{:rel=>"stylesheet", :href=> "/css/special.css", :type=>"text/css", :media=>"screen, projection"}
     %title Ho Ho Ho Ho!
   %body
     .container
       .span-24
         .span-3.last{:style=> "float: right"} 
+          %a{:href => "/list/by/by"} Artist
+        .span-3.last{:style=> "float: right"} 
           %a{:href => "/"} Ho Ho Ho 
         .span-3.last{:style=> "float: right"} 
-          %a{:href => "/song_list"} Songs
+          %a{:href => "/list/title/value/desc"} Songs
         .span-3.last{:style=> "float: right"} 
           %a{:href => "/date_list"} Dates 
         .span-3.last{:style=> "float: right"} 
-          %a{:href => "/station_list"} Stations
+          %a{:href => "/list/station/station"} Stations
       = yield
 

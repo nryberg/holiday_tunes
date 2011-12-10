@@ -2,5 +2,16 @@
 %table.span-12
   - @results.each do |result|
     %tr
-      %td= result["_id"]
+      %td
+        %a{:href => "#{@detail_link}/#{result["_id"]}"}= result["_id"]
       %td{:style=> "text-align:right"}= commify(result["value"].to_i)
+.span-12
+  - if @skip_value > 0 then
+    %a.span-4{:href => @last_link} <- Last 
+  - else 
+    .span-4 <- Last
+  - if @skip_value + 20 <= @count then
+    %a.span-3{:href => @next_link} Next ->
+  - else
+    .span-4 Next ->
+

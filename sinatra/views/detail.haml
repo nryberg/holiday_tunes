@@ -1,0 +1,12 @@
+%p.loud= @item
+%p= @value
+%p= commify(@results["value"].to_i)
+- @relate.each do |rel|
+  %h3= rel
+  %table
+    - @out[rel].find().sort(["value", "desc"]).limit(10).each do |row|
+      %tr
+        %td
+          %a{:href => "/detail/#{rel}/#{row['_id']}"}= row["_id"]
+        %td= commify(row["value"].to_i)
+  %p= @out[rel].count

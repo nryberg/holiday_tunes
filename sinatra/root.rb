@@ -10,8 +10,10 @@ require 'helpers'
 SERVER = '127.0.0.1'
 #SERVER = '192.168.0.100'
 DATABASE = 'holiday'
+#SONGS = 'songs_t'
 SONGS = 'song_list'
 OUTPUT = 'output'
+RELATED = ["title", "by", "station"]
 
 @con = Mongo::Connection.new(SERVER)
 @@db = @con[DATABASE]
@@ -20,7 +22,7 @@ OUTPUT = 'output'
 
 
 get "/" do
-  @@songs = @@db[SONGS].find.limit(20).to_a
+  @@songs = @@db[SONGS].find.limit(20).sort("at", :desc).to_a
   haml :index 
 end
 
@@ -33,28 +35,41 @@ end
 get '/list/:item/?:sort_by?/?:sort_order?/?:skip_value?' do
   
   @item = params[:item]
-  sort_by = params[:sort_by] ||= 'value'
-  order = Mongo::ASCENDING 
-  sort_order = params[:sort_order] ||= 'asc'
-  skip_value = params[:skip_value].to_i ||= 0
-
-  if sort_order == "desc" then
+  @sort_by = params[:sort_by] ||= 'value'
+  @order = Mongo::ASCENDING 
+  @sort_order = params[:sort_order] ||= 'asc'
+  @skip_value = params[:skip_value].to_i ||= 0
+  @last_link  = "/list/#{@item}/#{@sort_by}/#{@sort_order}/#{@skip_value - 20}"
+  @next_link = "/list/#{@item}/#{@sort_by}/#{@sort_order}/#{@skip_value + 20}" 
+  @detail_link = "/detail/#{@item}/"
+  if @sort_order == "desc" then
     order = Mongo::DESCENDING
   end
   map = Map.new(@@song_list)
   coll = map.count_by(@item)
-
-  @results = @@output.find({}).sort(sort_by, order).skip(skip_value).limit(20)
-
+  @count = @@output.count
+  @results = @@output.find({}).sort(@sort_by, order).skip(@skip_value).limit(20)
   haml :list
 end
 
-get '/station_list' do
+
+get '/detail/:item/:value' do
+  @value = params[:value]
+  @item = params[:item]
+
   map = Map.new(@@song_list)
-  coll = map.count_by("station")
-  @results = @@output.find({}).sort("value", :desc)
-  haml :station_list
+  map.count_by_filtered(@item, @value, @item)
+  @results = @@output.find_one()
+  @relate = RELATED - [@item]
+  @out = Hash.new
+  @relate.each do |rel|
+    @out[rel] = map.count_by(rel, "out_#{rel}", @item, @value)
+  end
+
+  haml :detail
+
 end
+
 
 get '/date_list' do
   map = Map.new(@@song_list)
@@ -64,15 +79,3 @@ get '/date_list' do
   haml :date_list
 end
 
-get '/song_list' do
-  map = Map.new(@@song_list)
-  map.count_by("title")
-  @high_results = @@output.find({}).sort("value", :desc).limit(10)
-  @low_results = @@output.find({}).sort("value", :asc).limit(10)
-  haml :song_list
-end
-
-get '/song/:title' do
-  title = params[:title]
-  map.count_by_filtered("artist", title)
-end 

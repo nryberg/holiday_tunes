@@ -10,7 +10,7 @@ file = File.new("stations.txt", "r")
 
 @con = Mongo::Connection.new
 @db = @con['holiday']
-@@songs = @db['songs']
+@@songs = @db['song_list']
 
 file.readlines.each do |station|
   @list = Yesradio::get_log :name => station.chomp, :ago => 1

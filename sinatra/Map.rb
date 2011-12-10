@@ -1,17 +1,26 @@
 class Map
-  attr_reader :collection, :collection_name, :columns, :rows, :table, :stat_rows
+  attr_reader :collection, :collection_name, :columns, :rows, :table, :stat_rows, :count
   def initialize(collection)
     @collection = collection
     
   end
   
-  def count_by(item)
+  def count()
+    @collection.count
+  end
+
+  def count_by(item, output = "output", filter_by = nil, filter_value = nil)
     m = "function(){
         emit(this.ITEM, 1);
         }"
     m.gsub!("ITEM", item)
     r = reduce_count
-    @collection.map_reduce(m,r,{:out =>"output"})
+
+    if filter_by.nil? then
+      @collection.map_reduce(m,r,{:out =>output})
+    else
+      @collection.map_reduce(m,r,{:out =>output, :query =>{filter_by => filter_value}})
+    end
     
   end
  
@@ -21,7 +30,7 @@ class Map
         }"
     m.gsub!("ITEM", item)
     r = reduce_count
-    @collection.map_reduce(m,r,{:out =>"output"}, {filter_by => filter})
+    @collection.map_reduce(m,r,{:out =>"output", :query =>{filter_by => filter}})
     
   end
  
@@ -55,7 +64,7 @@ class Map
   end
     
   
-  def group_by_count(item1, item2)
+  def group_by_count(item1, item2, output = "results", filter_by = nil, filter_value = nil)
     m = "function(){
           emit({" + item1 + " : this." + item1 + ", " +
                     item2 + " : this." + item2 +
@@ -64,7 +73,14 @@ class Map
           }"
     
    r = reduce_count    
-   output = @collection.map_reduce(m,r, {:out => "results"})
+
+   if filter_by.nil? then
+    output = @collection.map_reduce(m,r, {:out => output})
+    else
+    output = @collection.map_reduce(m,r, {:query => {filter_by => filter_value}, :out => output})
+
+   end
+ 
    @columns = output.distinct("_id." + item2)
    @rows = output.distinct("_id." + item1)
    
