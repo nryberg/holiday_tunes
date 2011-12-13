@@ -1,12 +1,16 @@
-%p.loud= @item
-%p= @value
-%p= commify(@results["value"].to_i)
-- @relate.each do |rel|
-  %h3= rel
-  %table
-    - @out[rel].find().sort(["value", "desc"]).limit(10).each do |row|
-      %tr
-        %td
-          %a{:href => "/detail/#{rel}/#{row['_id']}"}= row["_id"]
-        %td= commify(row["value"].to_i)
-  %p= @out[rel].count
+.span-24.last.pair
+  .span-4.label= @item
+  .span-12.last.value= @value
+.span-24.last.pair
+  .span-4.label plays
+  .span-8.last.value= commify(@results["value"].to_i)
+.span-24.last
+  - @relate.each do |rel|
+    %h3.span-24.last.label= rel
+    %table.push-1.last
+      - @out[rel].find().sort(["value", "desc"]).limit(10).each do |row|
+        %tr
+          %td.span-10
+            %a{:href => "/detail/#{rel}/#{row['_id']}"}= row["_id"]
+          %td= commify(row["value"].to_i)
+    .span-10.table_total.last= "Total Count: #{@out[rel].count}"

@@ -5,16 +5,16 @@
     %title Ho Ho Ho Ho!
   %body
     .container
-      .span-24
-        .span-3.last{:style=> "float: right"} 
+      .span-24#nav_bar.last
+        .span-3.nav_item.last{:style=> "float: right"} 
           %a{:href => "/list/by/by"} Artist
-        .span-3.last{:style=> "float: right"} 
+        .span-3.nav_item.last{:style=> "float: right"} 
           %a{:href => "/"} Ho Ho Ho 
-        .span-3.last{:style=> "float: right"} 
+        .span-3.nav_item.last{:style=> "float: right"} 
           %a{:href => "/list/title/value/desc"} Songs
-        .span-3.last{:style=> "float: right"} 
+        .span-3.nav_item.last{:style=> "float: right"} 
           %a{:href => "/date_list"} Dates 
-        .span-3.last{:style=> "float: right"} 
+        .span-3.nav_item.last{:style=> "float: right"} 
           %a{:href => "/list/station/station"} Stations
       = yield
 

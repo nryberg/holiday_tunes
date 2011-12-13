@@ -1,0 +1,27 @@
+.label {
+  font-weight: bold;
+  }
+
+.pair {
+  font-size: 200%;
+  border-bottom:1px dotted #666;
+  }
+
+.value {}
+
+.table_total{
+  text-align: right;
+  font-style:italic;
+  }
+
+#nav_bar{
+  font-weight: bold;
+  font-size: 125%;
+  border-bottom:1px dotted #666;
+  }
+
+.nav_item{
+  background: white;
+  border-right:1px solid #666;
+  padding-left: 10px;
+  }
