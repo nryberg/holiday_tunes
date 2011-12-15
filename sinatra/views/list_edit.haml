@@ -2,12 +2,22 @@
   .span-4.label list by
   .span-8.last.value= @item
 .span-24.last
-  %table.push-1.span-12.last
+  %table.push-1.span-14.last
     - @results.each do |result|
       %tr
         %td.span-10
           = detail_link(@item, result["_id"]) 
         %td.span-3{:style=> "text-align:right"}= commify(result["value"].to_i)
+        - if session["flag1"] == result["_id"]
+          %td Flagged
+        - else
+          %td.span-2
+            %a{:href => "/flag/1/#{@item}/#{result['_id']}"} Flag
+        - if session["flag2"] == result["_id"]
+          %td Flagged
+        - else
+          %td.span-2
+            %a{:href => "/flag/2/#{@item}/#{result['_id']}"} Flag
 .span-12
   - if @skip_value > 0 then
     %a.span-4{:href => @last_link} <- Last 
@@ -17,4 +27,6 @@
     %a.span-3{:href => @next_link} Next ->
   - else
     .span-4 Next ->
+%p
+  %a{:href => "/pairup"} Pair
 

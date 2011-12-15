@@ -1,5 +1,12 @@
 module Helpers
   helpers do
+    def detail_link(item, value)
+      # Should be in the form of 
+      # @detail_link = "/detail/#{@item}/"
+      # %a{:href => "#{@detail_link}/#{result["_id"]}"}= result["_id"]
+      link_to = "<a href='/detail/#{item}/#{value}'>#{value}</a>"
+    end
+
     def titleize(text)
       count  = 0
       result = []

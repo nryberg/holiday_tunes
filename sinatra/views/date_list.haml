@@ -5,6 +5,6 @@
     /%th= col
   - @results.rows.each do |row|
     %tr
-    %td= row
+    %td= detail_link("station", row)
     - @results.columns.each do |col|
       %td{:style => 'text-align: right'}= @results.table[[row, col]].to_i
