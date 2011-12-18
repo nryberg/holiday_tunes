@@ -1,7 +1,8 @@
 class Map
-  attr_reader :collection, :collection_name, :columns, :rows, :table, :stat_rows, :count
+  attr_reader :collection, :collection_name, :columns, :rows, :table, :stat_rows, :count, :database
   def initialize(collection)
     @collection = collection
+    @database = @collection.db
     
   end
   
@@ -21,9 +22,24 @@ class Map
     else
       @collection.map_reduce(m,r,{:out =>output, :query =>{filter_by => filter_value}})
     end
+
+    add_index_to_collection(output)
+    @database[output]
     
   end
- 
+
+
+  def add_index_to_collection(collection_name)
+    counter = 0
+    collection = @database[collection_name]
+    collection.find().each do |doc|
+      doc[:index] = counter
+      collection.save(doc)
+      counter += 1
+    end
+    counter
+  end
+
   def count_by_filtered(item, filter, filter_by)
     m = "function(){
         emit(this.ITEM, 1);
@@ -31,6 +47,8 @@ class Map
     m.gsub!("ITEM", item)
     r = reduce_count
     @collection.map_reduce(m,r,{:out =>"output", :query =>{filter_by => filter}})
+
+    add_index_to_collection("output")
     
   end
  
@@ -60,7 +78,7 @@ class Map
      col = row_col["day"]
      @table[[row, col]] = line["value"].to_i
     end
-     
+    add_index_to_collection("output") 
   end
     
   

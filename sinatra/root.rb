@@ -12,9 +12,9 @@ enable :sessions
 SERVER = '127.0.0.1'
 #SERVER = '192.168.0.100'
 DATABASE = 'holiday'
-SONGS = 'songs_t'
+#SONGS = 'songs_t'
 RENAME = 'rename'
-#SONGS = 'song_list'
+SONGS = 'song_list'
 OUTPUT = 'output'
 RELATED = ["title", "by", "station"]
 
@@ -25,14 +25,17 @@ RELATED = ["title", "by", "station"]
 @@renamed = @@db[RENAME]
 
 
-get "/" do
-  @@songs = @@db[SONGS].find.limit(20).sort("at", :desc).to_a
+get "/?:skip_value?" do
+  @skip_value = params[:skip_value].to_i || 0
+  @count = @@song_list.count()
+  @@songs = @@db[SONGS].find.limit(20).skip(@skip_value).sort("at", :desc).to_a
   haml :index 
 end
 
 get '/station/:station' do
   @station = params[:station]
   @count = @@song_list.find({:station=> params[:station]}).count
+  
   haml :station
 end
 
@@ -64,13 +67,15 @@ get '/list/:item/?:sort_by?/?:sort_order?/?:skip_value?' do
 end
 
 
-get '/detail/:item/:value' do
-  @value = params[:value]
+get '/detail/:item/:index' do
   @item = params[:item]
+  @index = params[:index]
+  
+  line =  @@db["out_#{@item}"].find_one({:index => @index})
+  ap line
 
   map = Map.new(@@song_list)
-  map.count_by_filtered(@item, @value, @item)
-  @results = @@output.find_one()
+  @item_count = @@song_list.find({@item => @value}).count()
   @relate = RELATED - [@item]
   @out = Hash.new
   @relate.each do |rel|
@@ -95,12 +100,23 @@ get '/pairup' do
 end
 
 get '/prefer/:num' do
+  num = params[:num].to_i
+  if num == 1 then 
+    @to = session[:flag1]
+    @from = session[:flag2]
+  else 
+    @to = session[:flag2]
+    @from = session[:flag1]
+  end
+    
+  replaced = session
   hashbrowns = {:item => session[:item],
-                              :from => session[:flag1],
-                              :to => session[:flag2]}
+                              :from => @from,
+                              :to => @to}
   @rename = @@renamed.find(hashbrowns)
   unless @rename.count() > 0 then
     @@renamed.insert(hashbrowns)
   end
-  @rename[:item]
+  haml :prefer
 end
+

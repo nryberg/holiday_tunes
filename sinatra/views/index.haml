@@ -2,7 +2,16 @@
   - @@songs.each do |song|
     %tr
       %td
-        %a{:href => "/detail/station/" + song["station"]}= song["station"]
+        %a{:href => "/station/" + song["station"]}= song["station"]
       %td= song["title"]
       %td= song["at"]
       %td= song["by"]
+.span-12
+  - if @skip_value > 0 then
+    %a.span-4{:href => "/#{@skip_value - 20}"} <- Last 
+  - else 
+    .span-4 <- Last
+  - if @skip_value + 20 <= @count then
+    %a.span-3{:href => "/#{@skip_value + 20}"} Next ->
+  - else
+    .span-4 Next ->
