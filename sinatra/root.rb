@@ -4,17 +4,17 @@ require "sinatra/reloader" if development?
 require 'haml'
 require 'mongo'
 require 'awesome_print'
-require 'Map'
-require 'helpers'
+require_relative 'Map'
+require_relative 'helpers'
 
 enable :sessions
 
 SERVER = '127.0.0.1'
 #SERVER = '192.168.0.100'
 DATABASE = 'holiday'
-#SONGS = 'songs_t'
+SONGS = 'songs_t'
+#SONGS = 'song_list'
 RENAME = 'rename'
-SONGS = 'song_list'
 OUTPUT = 'output'
 RELATED = ["title", "by", "station"]
 
@@ -24,6 +24,21 @@ RELATED = ["title", "by", "station"]
 @@output = @@db[OUTPUT]
 @@renamed = @@db[RENAME]
 
+get '/pairup' do
+  @item = session[:item]
+  @output = "out_#{@item}"
+  @first = @@db[@output].find_one(:index => session["flag1"].to_i)
+  @second = @@db[@output].find_one(:index => session["flag2"].to_i)
+  haml :pairup
+end
+
+get '/date_list' do
+  map = Map.new(@@song_list)
+  map.count_item_by_day("station")
+  @results = map
+  
+  haml :date_list
+end
 
 get "/?:skip_value?" do
   @skip_value = params[:skip_value].to_i || 0
@@ -39,19 +54,22 @@ get '/station/:station' do
   haml :station
 end
 
-get '/flag/:num/:item/:value' do
+get '/flag/:num/:item/:index' do
   flag = "flag#{params[:num]}"
-  session[flag] = params[:value]
+  session[flag] = params[:index].to_i
   session[:item] = params[:item]
   redirect session[:last_query]
+
 
 end
 
 get '/list/:item/?:sort_by?/?:sort_order?/?:skip_value?' do
   session[:last_query] = request.fullpath  
   @item = params[:item]
+  session[:item] = params[:item]
   @sort_by = params[:sort_by] ||= 'value'
   @order = Mongo::ASCENDING 
+  @output = "out_#{@item}"
   @sort_order = params[:sort_order] ||= 'asc'
   @skip_value = params[:skip_value].to_i ||= 0
   @last_link  = "/list/#{@item}/#{@sort_by}/#{@sort_order}/#{@skip_value - 20}"
@@ -60,20 +78,21 @@ get '/list/:item/?:sort_by?/?:sort_order?/?:skip_value?' do
     order = Mongo::DESCENDING
   end
   map = Map.new(@@song_list)
-  coll = map.count_by(@item)
-  @count = @@output.count
-  @results = @@output.find({}).sort(@sort_by, order).skip(@skip_value).limit(20)
+  map.count_by(@item, @output)
+  @count = @@db[@output].count
+  @results = @@db[@output].find({}).sort(@sort_by, order).skip(@skip_value).limit(20)
   haml :list_edit
 end
 
 
 get '/detail/:item/:index' do
   @item = params[:item]
-  @index = params[:index]
-  
-  line =  @@db["out_#{@item}"].find_one({:index => @index})
+  @index = params[:index].to_i
+  @output = "out_#{@item}"
+  ap [@item, @index, @output]
+  line =  @@db[@output].find_one({:index => @index})
   ap line
-
+  @value = line["_id"]
   map = Map.new(@@song_list)
   @item_count = @@song_list.find({@item => @value}).count()
   @relate = RELATED - [@item]
@@ -87,28 +106,18 @@ get '/detail/:item/:index' do
 end
 
 
-get '/date_list' do
-  map = Map.new(@@song_list)
-  map.count_item_by_day("station")
-  @results = map
-  
-  haml :date_list
-end
-
-get '/pairup' do
-  haml :pairup
-end
 
 get '/prefer/:num' do
   num = params[:num].to_i
   if num == 1 then 
-    @to = session[:flag1]
-    @from = session[:flag2]
+    @to_id = session[:flag1]
+    @from_id = session[:flag2]
   else 
-    @to = session[:flag2]
-    @from = session[:flag1]
+    @to_id = session[:flag2]
+    @from_id = session[:flag1]
   end
-    
+  @from = @@db["out_#{session[:item]}"].find_one(:index => @from_id)["_id"] 
+  @to = @@db["out_#{session[:item]}"].find_one(:index => @to_id)["_id"] 
   replaced = session
   hashbrowns = {:item => session[:item],
                               :from => @from,
@@ -117,6 +126,7 @@ get '/prefer/:num' do
   unless @rename.count() > 0 then
     @@renamed.insert(hashbrowns)
   end
+  process_run_rename
   haml :prefer
 end
 

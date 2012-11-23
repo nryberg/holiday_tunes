@@ -1,10 +1,17 @@
 module Helpers
   helpers do
-    def detail_link(item, value)
+    def process_run_rename
+      # Processes renames
+
+
+    end
+    
+
+    def detail_link(item, value, label)
       # Should be in the form of 
       # @detail_link = "/detail/#{@item}/"
       # %a{:href => "#{@detail_link}/#{result["_id"]}"}= result["_id"]
-      link_to = "<a href='/detail/#{item}/#{value}'>#{value}</a>"
+      link_to = "<a href='/detail/#{item}/#{value}'>#{label}</a>"
     end
 
     def titleize(text)

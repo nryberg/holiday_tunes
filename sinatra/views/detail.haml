@@ -7,10 +7,10 @@
 .span-24.last
   - @relate.each do |rel|
     %h3.span-24.last.label= rel
-    %table.push-1.last
+    %table.span-10.push-1.last
       - @out[rel].find().sort(["value", "desc"]).limit(10).each do |row|
         %tr
           %td.span-10
             %a{:href => "/detail/#{rel}/#{row['index']}"}= row["_id"]
-          %td= commify(row["value"].to_i)
+          %td.number= commify(row["value"].to_i)
     .span-10.table_total.last= "Total Count: #{@out[rel].count}"

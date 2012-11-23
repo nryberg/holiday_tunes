@@ -1,5 +1,5 @@
 class Map
-  attr_reader :collection, :collection_name, :columns, :rows, :table, :stat_rows, :count, :database
+  attr_reader :collection, :collection_name, :columns, :rows, :table, :stat_rows, :count, :database, :output
   def initialize(collection)
     @collection = collection
     @database = @collection.db
@@ -78,7 +78,6 @@ class Map
      col = row_col["day"]
      @table[[row, col]] = line["value"].to_i
     end
-    add_index_to_collection("output") 
   end
     
   
