@@ -1,8 +1,8 @@
 #!/usr/bin/ruby
-require 'nokogiri'
+#require 'nokogiri'
 require 'rubygems'
-require "awesome_print"
-require 'net/http'
+#require "awesome_print"
+#require 'net/http'
 require 'mechanize'
 #require 'httparty'
 #require 'yesradio'
