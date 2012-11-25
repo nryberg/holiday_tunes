@@ -9,9 +9,9 @@ require_relative 'helpers'
 
 enable :sessions
 
-SERVER = '127.0.0.1'
-#SERVER = '192.168.0.100'
-DATABASE = 'holiday'
+#SERVER = '127.0.0.1'
+SERVER = '192.168.0.100'
+DATABASE = 'holiday_2012'
 SONGS = 'songs_t'
 #SONGS = 'song_list'
 RENAME = 'rename'
@@ -23,6 +23,11 @@ RELATED = ["title", "by", "station"]
 @@song_list = @@db[SONGS]
 @@output = @@db[OUTPUT]
 @@renamed = @@db[RENAME]
+
+get '/sample_data' do
+  @songs = @@db['KQQL']
+  haml :sample
+end
 
 get '/pairup' do
   @item = session[:item]
@@ -129,4 +134,5 @@ get '/prefer/:num' do
   process_run_rename
   haml :prefer
 end
+
 
