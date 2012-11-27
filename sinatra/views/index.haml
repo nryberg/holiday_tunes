@@ -3,8 +3,8 @@
     %tr
       %td
         %a{:href => "/station/" + song["station"]}= song["station"]
-      %td= song["title"]
-      %td= song["at"]
+      %td= song["title_original"]
+      %td= song["at"].strftime("%m/%d/%y at %H:%M %p")
       %td= song["by"]
 .span-12
   - if @skip_value > 0 then

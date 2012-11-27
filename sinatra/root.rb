@@ -12,7 +12,7 @@ enable :sessions
 #SERVER = '127.0.0.1'
 SERVER = '192.168.0.100'
 DATABASE = 'holiday_2012'
-SONGS = 'songs_t'
+SONGS = 'log'
 #SONGS = 'song_list'
 RENAME = 'rename'
 OUTPUT = 'output'
