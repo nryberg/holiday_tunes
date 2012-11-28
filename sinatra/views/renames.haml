@@ -1,0 +1,11 @@
+%h2 Renames
+
+%table
+  %tr
+    %th From
+    %th To
+  - @@renamed.find().each do |rename| 
+    %tr
+      %td= rename["from"]
+      %td= rename["to"]
+

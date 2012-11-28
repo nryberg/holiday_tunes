@@ -32,12 +32,17 @@ class Map
   def add_index_to_collection(collection_name)
     counter = 0
     collection = @database[collection_name]
-    collection.find().each do |doc|
-      doc[:index] = counter
-      collection.save(doc)
-      counter += 1
+    collection.find().each do |doc| 
+      if doc[:index].nil? then 
+        if doc["_id"] == "Christmas (Baby Please Come..)" then
+          ap doc
+          ap counter
+        end
+        doc[:index] = counter
+        #collection.save(doc)
+        counter += 1
+      end
     end
-    counter
   end
 
   def count_by_filtered(item, filter, filter_by)

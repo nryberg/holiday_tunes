@@ -1,10 +1,11 @@
+#!/usr/bin/env  rvm 1.9.3 do ruby
 require 'yesradio'
 require 'awesome_print'
 require 'mongo'
 require 'mongo'
 require 'time'
-#SERVER = '127.0.0.1'
-SERVER = '192.168.0.100'
+SERVER = '127.0.0.1'
+#SERVER = '192.168.0.100'
 DATABASE = 'holiday_2012'
 
 file = File.new("stations_with_name.txt", "r")
@@ -17,10 +18,15 @@ station = 'KQQL'
 
 @@log.remove()
 
+(1..10).each do |x|
+  ap x
+end
+stop
 
 file.readlines.each do |station_data|
   station = station_data.split(' ')[0]
   ap 'Pulling ' + station
+  
   test = Yesradio::get_log :name => station, :ago => 6
   test.each do |song|
     entry = {:station => station.chomp, 

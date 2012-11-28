@@ -9,8 +9,8 @@ require_relative 'helpers'
 
 enable :sessions
 
-#SERVER = '127.0.0.1'
-SERVER = '192.168.0.100'
+SERVER = '127.0.0.1'
+#SERVER = '192.168.0.100'
 DATABASE = 'holiday_2012'
 SONGS = 'log'
 #SONGS = 'song_list'
@@ -43,13 +43,6 @@ get '/date_list' do
   @results = map
   
   haml :date_list
-end
-
-get "/?:skip_value?" do
-  @skip_value = params[:skip_value].to_i || 0
-  @count = @@song_list.count()
-  @@songs = @@db[SONGS].find.limit(20).skip(@skip_value).sort("at", :desc).to_a
-  haml :index 
 end
 
 get '/station/:station' do
@@ -133,6 +126,27 @@ get '/prefer/:num' do
   end
   process_run_rename
   haml :prefer
+end
+
+get '/rename/:item/:index' do 
+  @item = params[:item]
+  @index = params[:index].to_i
+  @output = "out_#{@item}"
+  ap [@item, @index, @output]
+  line =  @@db[@output].find_one({:index => @index})
+  ap line
+  @value = line["_id"]
+end
+get '/renames' do
+
+  haml :renames
+end
+
+get "/?:skip_value?" do
+  @skip_value = params[:skip_value].to_i || 0
+  @count = @@song_list.count()
+  @@songs = @@db[SONGS].find.limit(20).skip(@skip_value).sort("at", :desc).to_a
+  haml :index 
 end
 
 
