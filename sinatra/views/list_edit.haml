@@ -7,7 +7,7 @@
       %tr
         %td= result.to_s
         %td.span-10
-          = detail_link(@item, result["index"], result["_id"]) 
+          = detail_link(@item, result["lookup"], result["_id"]) 
         %td.span-3{:style=> "text-align:right"}= commify(result["value"].to_i)
         - if session["flag1"] == result["index"]
           %td Flagged

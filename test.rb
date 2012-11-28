@@ -18,25 +18,23 @@ station = 'KQQL'
 
 @@log.remove()
 
-(1..10).each do |x|
-  ap x
-end
-stop
 
 file.readlines.each do |station_data|
   station = station_data.split(' ')[0]
   ap 'Pulling ' + station
-  
-  test = Yesradio::get_log :name => station, :ago => 6
-  test.each do |song|
-    entry = {:station => station.chomp, 
-            :title => song.title, 
-            :at => Time.parse(song.at.to_s).utc, 
-            :by => song.by,
-            :song_yes_id => song.id, 
-            }
+  (1..5).each do |day_num|
+    ap "day " + day_num.to_s
+    test = Yesradio::get_log :name => station, :ago => day_num.to_s
+    test.each do |song|
+      entry = {:station => station.chomp, 
+              :title => song.title, 
+              :at => Time.parse(song.at.to_s).utc, 
+              :by => song.by,
+              :song_yes_id => song.id, 
+              }
 
-    @@log.save(entry)
+      @@log.save(entry)
+  end
 
   end
 end

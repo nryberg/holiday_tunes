@@ -76,9 +76,12 @@ get '/list/:item/?:sort_by?/?:sort_order?/?:skip_value?' do
     order = Mongo::DESCENDING
   end
   map = Map.new(@@song_list)
-  map.count_by(@item, @output)
+  @results  = map.group_by(@item, @output)
   @count = @@db[@output].count
-  @results = @@db[@output].find({}).sort(@sort_by, order).skip(@skip_value).limit(20)
+  #@results = @@db[@output].find({}).sort(@sort_by, order).skip(@skip_value).limit(20)
+  #@results = @@db[@output].find() #.sort(@sort_by, order).skip(@skip_value).limit(20)
+  ap @output
+  ap @results.first
   haml :list_edit
 end
 
@@ -88,7 +91,7 @@ get '/detail/:item/:index' do
   @index = params[:index].to_i
   @output = "out_#{@item}"
   ap [@item, @index, @output]
-  line =  @@db[@output].find_one({:index => @index})
+  line =  @@db[@output].find_one({:lookup => @index})
   ap line
   @value = line["_id"]
   map = Map.new(@@song_list)

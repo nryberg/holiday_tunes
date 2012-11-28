@@ -10,6 +10,7 @@ class Map
     @collection.count
   end
 
+
   def count_by(item, output = "output", filter_by = nil, filter_value = nil)
     m = "function(){
         emit(this.ITEM, 1);
@@ -32,16 +33,14 @@ class Map
   def add_index_to_collection(collection_name)
     counter = 0
     collection = @database[collection_name]
+    max = collection.count
     collection.find().each do |doc| 
-      if doc[:index].nil? then 
-        if doc["_id"] == "Christmas (Baby Please Come..)" then
-          ap doc
-          ap counter
-        end
-        doc[:index] = counter
-        #collection.save(doc)
+      if doc[:lookup].nil? then 
+        doc[:lookup] = "c_" + counter.to_s
+        collection.save(doc, :safe => true)
         counter += 1
       end
+      if count > max then ap "What the fuck?" end
     end
   end
 
@@ -84,7 +83,14 @@ class Map
      @table[[row, col]] = line["value"].to_i
     end
   end
-    
+
+  def group_by(item, filter_by = nil, filter_value = nil)
+    @collection.group({:key => item}, 
+                      nil, 
+                      {:count => 0},
+                      "function(x,y){y.count++}"
+                      )
+  end  
   
   def group_by_count(item1, item2, output = "results", filter_by = nil, filter_value = nil)
     m = "function(){
@@ -165,7 +171,7 @@ class Map
        vals.forEach(function(val) {
          sum += val;
          });
-       return sum;
+       return (sum);
        };"
   end
     
