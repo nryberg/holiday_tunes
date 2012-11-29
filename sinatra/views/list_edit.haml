@@ -5,10 +5,9 @@
   %table.push-1.span-14.last
     - @results.each do |result|
       %tr
-        %td= result.to_s
         %td.span-10
-          = detail_link(@item, result["lookup"], result["_id"]) 
-        %td.span-3{:style=> "text-align:right"}= commify(result["value"].to_i)
+          = detail_link(@item, result["_id"], result["name"]) 
+        %td.span-3{:style=> "text-align:right"}= commify(result["count"].to_i)
         - if session["flag1"] == result["index"]
           %td Flagged
         - else

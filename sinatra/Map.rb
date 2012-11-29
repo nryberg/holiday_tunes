@@ -84,12 +84,23 @@ class Map
     end
   end
 
-  def group_by(item, filter_by = nil, filter_value = nil)
-    @collection.group({:key => item}, 
-                      nil, 
-                      {:count => 0},
-                      "function(x,y){y.count++}"
-                      )
+  def group_by(item, output, filter_by = nil, filter_value = nil)
+    @database.drop_collection('base')
+    @sorted = @collection.find({}, {:sort => [item, :asc]})
+    @base = @database['base']
+    @sorted.each do |x|
+      @base.insert(x)
+    end
+      
+    grouped = @base.group({:key => item, 
+                      :initial => {:count => 0},
+                      :reduce => "function(x,y){y.count++}"
+                      })
+    @coll = @database[output]
+    grouped.each do |entry|
+      @coll.insert(entry)
+    end
+    @coll.find()
   end  
   
   def group_by_count(item1, item2, output = "results", filter_by = nil, filter_value = nil)

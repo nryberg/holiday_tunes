@@ -1,8 +1,8 @@
-require  'rubygems'
 require  'sinatra'
 require "sinatra/reloader" if development?
 require 'haml'
 require 'mongo'
+
 require 'awesome_print'
 require_relative 'Map'
 require_relative 'helpers'
@@ -75,23 +75,18 @@ get '/list/:item/?:sort_by?/?:sort_order?/?:skip_value?' do
   if @sort_order == "desc" then
     order = Mongo::DESCENDING
   end
-  map = Map.new(@@song_list)
-  @results  = map.group_by(@item, @output)
   @count = @@db[@output].count
-  #@results = @@db[@output].find({}).sort(@sort_by, order).skip(@skip_value).limit(20)
-  #@results = @@db[@output].find() #.sort(@sort_by, order).skip(@skip_value).limit(20)
-  ap @output
-  ap @results.first
+  @results = @@db[@output].find({}).sort(@sort_by, order).skip(@skip_value).limit(20)
   haml :list_edit
 end
 
 
 get '/detail/:item/:index' do
   @item = params[:item]
-  @index = params[:index].to_i
+  @index = params[:index]
   @output = "out_#{@item}"
   ap [@item, @index, @output]
-  line =  @@db[@output].find_one({:lookup => @index})
+  line =  @@db[@output].find_one(BSON::ObjectId(@index))
   ap line
   @value = line["_id"]
   map = Map.new(@@song_list)
