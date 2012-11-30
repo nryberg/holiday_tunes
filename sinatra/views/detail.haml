@@ -1,16 +1,16 @@
 .span-24.last.pair
   .span-4.label= @item
-  .span-12.last.value= @value
+  .span-12.last.value= @name
 .span-24.last.pair
   .span-4.label plays
   .span-8.last.value= commify(@item_count.to_i)
 .span-24.last
   - @relate.each do |rel|
-    %h3.span-24.last.label= rel
-    %table.span-10.push-1.last
-      - @out[rel].find().sort(["value", "desc"]).limit(10).each do |row|
-        %tr
-          %td.span-10
-            %a{:href => "/detail/#{rel}/#{row['index']}"}= row["_id"]
-          %td.number= commify(row["value"].to_i)
-    .span-10.table_total.last= "Total Count: #{@out[rel].count}"
+    .span-9.append-1.prepend-1
+      %h3.label= rel
+      %table.span-10
+        - @relate_data[rel][0..9].each do |row|
+          %tr
+            %td.span-10= detail_link(rel, row["_id"], row[rel])
+            %td.span-4.number= commify(row["count"].to_i)
+      .span-9.table_total.last= "Total: #{@relate_data[rel].count}"

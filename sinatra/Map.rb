@@ -89,10 +89,10 @@ class Map
     @sorted = @collection.find({}, {:sort => [item, :asc]})
     @base = @database['base']
     @sorted.each do |x|
-      @base.insert(x)
+      @base.insert(:name => x[item])
     end
       
-    grouped = @base.group({:key => item, 
+    grouped = @base.group({:key => "name", 
                       :initial => {:count => 0},
                       :reduce => "function(x,y){y.count++}"
                       })

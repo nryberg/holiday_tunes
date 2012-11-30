@@ -10,13 +10,14 @@ require_relative 'helpers'
 enable :sessions
 
 SERVER = '127.0.0.1'
+SERVER = 'santa:holly@alex.mongohq.com:10093/holiday_2012'
 #SERVER = '192.168.0.100'
 DATABASE = 'holiday_2012'
 SONGS = 'log'
 #SONGS = 'song_list'
 RENAME = 'rename'
 OUTPUT = 'output'
-RELATED = ["title", "by", "station"]
+RELATED = ["title", "by", "station", "day", "time"]
 
 @con = Mongo::Connection.new(SERVER)
 @@db = @con[DATABASE]
@@ -85,18 +86,31 @@ get '/detail/:item/:index' do
   @item = params[:item]
   @index = params[:index]
   @output = "out_#{@item}"
-  ap [@item, @index, @output]
+    
   line =  @@db[@output].find_one(BSON::ObjectId(@index))
-  ap line
-  @value = line["_id"]
-  map = Map.new(@@song_list)
-  @item_count = @@song_list.find({@item => @value}).count()
+  @id = line["_id"]
+  @name = line["name"]
+  @item_count = @@song_list.find({@item => @name}).count()
   @relate = RELATED - [@item]
-  @out = Hash.new
+  @relate_data = Hash.new
   @relate.each do |rel|
-    @out[rel] = map.count_by(rel, "out_#{rel}", @item, @value)
+    outfile = "out_#{rel}"
+    arr = @@song_list.group({:key => "#{rel}", 
+                      :initial => {:count => 0},
+                      :reduce => "function(x,y){y.count++}",
+                      :cond => {@item => @name}
+                      })
+    arr.each_index do |index|
+      search_term = arr[index][rel]
+      ap search_term
+      ap outfile
+      search_line = @@db[outfile].find_one({:name => search_term})
+      ap search_line
+      search_line = @@db[outfile].find_one({:name => search_term})["_id"]
+      arr[index]["_id"] = search_line 
+    end
+    @relate_data[rel] = arr.sort {|a, b| b["count"] <=> a["count"]} 
   end
-
   haml :detail
 
 end
