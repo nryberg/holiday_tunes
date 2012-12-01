@@ -8,18 +8,6 @@
         %td.span-10
           = detail_link(@item, result["_id"], result["name"]) 
         %td.span-3{:style=> "text-align:right"}= commify(result["count"].to_i)
-        - if session["flag1"] == result["index"]
-          %td Flagged
-        - else
-          %td.span-2
-            %a{:href => "/flag/1/#{@item}/#{result['index']}"} Flag
-        - if session["flag2"] == result["index"]
-          %td Flagged
-        - else
-          %td.span-2
-            %a{:href => "/flag/2/#{@item}/#{result['index']}"} Flag
-        %td.span-2
-          %a{:href => "/rename/#{@item}/#{result['index']}"} Rename
 .span-12
   - if @skip_value > 0 then
     %a.span-4{:href => @last_link} <- Last 

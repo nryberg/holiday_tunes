@@ -10,7 +10,10 @@ require_relative 'helpers'
 enable :sessions
 
 SERVER = '127.0.0.1'
-SERVER = 'santa:holly@alex.mongohq.com:10093/holiday_2012'
+user = 'santa'
+pwd = 'holly'
+port = '10093'
+SERVER = 'alex.mongohq.com'
 #SERVER = '192.168.0.100'
 DATABASE = 'holiday_2012'
 SONGS = 'log'
@@ -19,8 +22,9 @@ RENAME = 'rename'
 OUTPUT = 'output'
 RELATED = ["title", "by", "station", "day", "time"]
 
-@con = Mongo::Connection.new(SERVER)
+@con = Mongo::Connection.new(SERVER, port)
 @@db = @con[DATABASE]
+@@db.authenticate(user, pwd)
 @@song_list = @@db[SONGS]
 @@output = @@db[OUTPUT]
 @@renamed = @@db[RENAME]
