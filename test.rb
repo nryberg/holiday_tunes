@@ -21,7 +21,7 @@ auth = @@db.authenticate('admin', pwd)
 @@by = @@db['by']
 @@log = @@db['log']
 
-@@log.remove()
+#@@log.remove()
 
 
 file.readlines.each do |station_data|
