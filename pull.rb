@@ -5,7 +5,7 @@ require "awesome_print"
 #require 'net/http'
 require 'mechanize'
 require 'httparty'
-#require 'yesradio'
+require 'yesradio'
 require 'mongo'
 require 'time'
 file = File.new("stations.txt", "r")
@@ -14,15 +14,16 @@ file = File.new("stations.txt", "r")
 @con = Mongo::Connection.new('192.168.0.100', 27017)
 @db = @con['holiday_2']
 @@songs = @db['song_list_2013']
-
+@counter = 0
 file.readlines.each do |station|
   
-  @list = response = HTTParty.get('http://api.yes.com/1/log?name=' + station.chomp) 
-
- # @list = Yesradio::get_log :name => station.chomp, :ago => 1
-  ap station.chomp
-  unless @list.nil? 
+  #@list = response = HTTParty.get('http://api.yes.com/1/log?name=' + station.chomp + '&ago=1') 
+   @list = Yesradio::get_log :name => station.chomp
+   ap station.chomp
+   unless @list.nil? 
     @list.each do |song|
+      if @counter > 20 then break end
+      @counter += 1
       entry = {:station => station.chomp, 
               :title => song.title, 
               :at => Time.parse(song.at.to_s).utc, 
